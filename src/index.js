@@ -1,4 +1,4 @@
-import add from "add"
+import add from "./add"
 import {minus} from "./minus";
 
 const sum = add(1,2);
