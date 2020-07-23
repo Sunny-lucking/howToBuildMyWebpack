@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const parser = require('@babel/parser')
 const traverse = require('@babel/traverse').default
+const babel = require('@babel/core')
 const getModuleInfo = (file)=>{
     const body = fs.readFileSync(file,'utf-8')
     const ast = parser.parse(body,{
@@ -15,8 +16,10 @@ const getModuleInfo = (file)=>{
             deps[node.source.value] = abspath
         }
     })
-    console.log(deps);
-
-
+    const {code} = babel.transformFromAst(ast,null,{
+        presets:["@babel/preset-env"]
+    })
+    const moduleInfo = {file,deps,code}
+    return moduleInfo
 }
 getModuleInfo("./src/index.js")
