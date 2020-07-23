@@ -22,4 +22,26 @@ const getModuleInfo = (file)=>{
     const moduleInfo = {file,deps,code}
     return moduleInfo
 }
-getModuleInfo("./src/index.js")
+const parseModules = (file) =>{
+    const entry =  getModuleInfo(file)
+    const temp = [entry]
+    const depsGraph = {}
+    for (let i = 0;i<temp.length;i++){
+        const deps = temp[i].deps
+        if (deps){
+            for (const key in deps){
+                if (deps.hasOwnProperty(key)){
+                    temp.push(getModuleInfo(deps[key]))
+                }
+            }
+        }
+    }
+    temp.forEach(moduleInfo=>{
+        depsGraph[moduleInfo.file] = {
+            deps:moduleInfo.deps,
+            code:moduleInfo.code
+        }
+    })
+    console.log(depsGraph)
+}
+parseModules("./src/index.js")
