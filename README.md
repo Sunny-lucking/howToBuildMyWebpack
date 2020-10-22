@@ -72,7 +72,7 @@ index.html
 
 现在我们打开index.html。你猜会发生什么？？？显然会报错，因为浏览器还不能识别import语法
 
-![](https://imgkr.cn-bj.ufileos.com/3397e5a7-5654-4df2-9c37-86038cd145df.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428e16ee77?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 不过没关系，因为我们本来就是要来解决这些问题的。
 
@@ -97,13 +97,13 @@ getModuleInfo("./src/index.js")
 
 目前项目目录如下
 
-![](https://imgkr.cn-bj.ufileos.com/1308de65-973b-4ba4-902a-15d4755a0c43.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428e96990a?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 我们来执行一下bundle.js，看看时候成功获得入口文件内容
 
 
 
-![](https://imgkr.cn-bj.ufileos.com/960a5308-ed5e-40ea-8171-e7875b4c07e0.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428eab35af?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 哇塞，不出所料的成功。一切尽在掌握之中。好了，已经实现第一步了，且让我看看第二步是要干嘛。
 
@@ -137,20 +137,20 @@ getModuleInfo("./src/index.js")
 
 我们去看下@babel/parser的文档：
 
-![](https://imgkr.cn-bj.ufileos.com/074e131a-7b3a-44f6-8efe-cf74c4ecc6dc.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4429116277c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 可见提供了三个API，而我们目前用到的是parse这个API。
 
 它的主要作用是 parses the provided code as an entire ECMAScript program，也就是将我们提供的代码解析成完整的ECMAScript代码。
 
 再看看该API提供的参数
 
-![](https://imgkr.cn-bj.ufileos.com/09217b83-c26d-4812-a1d1-2680d42e6d4e.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442948b3312?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 我们暂时用到的是sourceType，也就是用来指明我们要解析的代码是什么模块。
 
 好了，现在我们来执行一下 bundle.js，看看AST是否成功生成。
 
 
-![](https://imgkr.cn-bj.ufileos.com/ee010518-6223-4bcc-8021-38c4438a6086.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442b1ca38e5?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 
 成功。又是不出所料的成功。
@@ -160,7 +160,7 @@ getModuleInfo("./src/index.js")
 
 
 
-![](https://imgkr.cn-bj.ufileos.com/b57621b6-502a-4abb-9624-f51d5b01d1a7.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442b884bcf4?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 
 我们可以改成打印ast.program.body看看
@@ -184,7 +184,7 @@ getModuleInfo("./src/index.js"
 
 
 
-![](https://imgkr.cn-bj.ufileos.com/410e8967-dd11-462a-9f54-118c55c14e5d.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442bddc993d?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 
 看，现在打印出来的就是 index.js文件里的内容（也就是我们再index.js里写的代码啦）.
@@ -231,7 +231,7 @@ getModuleInfo("./src/index.js")
 我们来看下官方文档对@babel/traverse的描述
 
 
-![](https://imgkr.cn-bj.ufileos.com/67893baa-7900-42d6-ba33-1c12edfe862a.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442bf94ac34?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 好吧，如此简略
 
 不过我们不难看出，第一个参数就是AST。第二个参数就是配置对象
@@ -250,7 +250,7 @@ traverse(ast,{
 我们看看之前打印出来的AST。
 
 
-![](https://imgkr.cn-bj.ufileos.com/5bbed303-f3cd-4796-90d8-70b9c3667819.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442c2eb2d42?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 ImportDeclaration方法代表的是对type类型为ImportDeclaration的节点的处理。
 
@@ -275,7 +275,7 @@ console.log(division);
 ok，这个操作就结束了，执行看看收集成功了没？
 
 
-![](https://imgkr.cn-bj.ufileos.com/30be1ff8-8ddf-4076-8e00-ae33cd23a56b.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442e3f91329?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 oh my god。又成功了。
 
@@ -324,7 +324,7 @@ getModuleInfo("./src/index.js")
 我们看看官网文档对@babel/core 的transformFromAst的介绍
 
 
-![](https://imgkr.cn-bj.ufileos.com/4e4af54b-bc86-4274-bfc0-6ff4199aa00e.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442d065d8a4?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 害，又是一如既往的简略。。。
 
@@ -332,7 +332,7 @@ getModuleInfo("./src/index.js")
 
 好了，现在我们来执行一下，看看结果
 
-![](https://imgkr.cn-bj.ufileos.com/b595f88b-87fc-41f2-88c6-6af5663889c4.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442ed52794c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 我的天，一如既往的成功。可见 它将我们写const 转化成var了。
 
@@ -452,7 +452,7 @@ parseModules("./src/index.js")
 ,执行看看。
 
 
-![](https://imgkr.cn-bj.ufileos.com/3f6a9416-cb8d-447f-8b60-751f03899bb1.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442e4a822fc?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 牛逼！！！确实如此。
 
@@ -488,7 +488,7 @@ const parseModules = (file) =>{
 
 ok，现在存储的就是这种格式啦
 
-![](https://imgkr.cn-bj.ufileos.com/5d923b43-0ca1-482e-9b72-641449aeae76.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442ed76d596?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 ## 八、处理两个关键字
 
@@ -496,7 +496,7 @@ ok，现在存储的就是这种格式啦
 
 
 
-![](https://imgkr.cn-bj.ufileos.com/4c9d738b-bc68-4c44-b4fa-15c3d6613ace.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442fd3ba98e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 
 我们把这段代码格式化一下
@@ -618,10 +618,10 @@ console.log(sum); console.log(division);
 3. 执行eval，也就是执行了index.js的代码。
 4. 执行过程会执行到require函数。
 5. 这时会调用这个require，也就是我们传入的absRequire
-![](https://imgkr.cn-bj.ufileos.com/5b760d61-2ed8-48b5-9aeb-04cfa692ff07.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e44302247961?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 6. 而执行absRequire就执行了`return require(graph[file].deps[relPath])`这段代码，也就是执行了外面这个require
 
-![](https://imgkr.cn-bj.ufileos.com/738a140d-cca5-479c-8507-dffe9d498c7b.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4430a58feb7?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 在这里`return require(graph[file].deps[relPath])`，我们已经对路径转化成绝对路径了。因此执行外面的require的时候就是传入绝对路径。
 
 7. 而执行require（"./src/add.js"）之后，又会执行eval，也就是执行add.js文件的代码。
@@ -760,7 +760,7 @@ console.log(content);
 
 来执行下，看看效果
 
-![](https://imgkr.cn-bj.ufileos.com/babc6b2d-6622-4b06-ae3c-4c731c8c27a1.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4431d738737?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 确实执行成功。接下来，把返回的这段代码写入新创建的文件中
 
 
@@ -774,14 +774,14 @@ fs.writeFileSync('./dist/bundle.js',content)
 
 我们参观下生成的bundle.js文件
 
-![](https://imgkr.cn-bj.ufileos.com/0bc8ef8d-df7a-4176-808c-21053dd4a9db.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4432571632c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 发现其实就是将我们早期收集的所有依赖作为参数传入到立即执行函数当中，然后通过eval来递归地执行每个依赖的code。
 
 现在我们将bundle.js文件引入index.html看看能不能执行
 
 
-![](https://imgkr.cn-bj.ufileos.com/8316bad8-53b8-4586-9317-aa98ac72eb1f.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e44325c1b044?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 成功。。。。。惊喜。。
 
