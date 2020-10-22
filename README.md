@@ -22,7 +22,7 @@
 
 项目目录暂时如下：
   
-![](https://imgkr.cn-bj.ufileos.com/7c3daf8f-4b96-40a0-ae9a-2c14a8258c6b.png)
+![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428976afb1?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 >已经把项目放到 **github**：https://github.com/Sunny-lucking/howToBuildMyWebpack。 可以卑微地要个star吗
 
