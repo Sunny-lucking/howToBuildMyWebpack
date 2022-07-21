@@ -1,6 +1,5 @@
-
 # 手写webpack核心原理
-[toc]
+@[toc]
 ## 一、核心打包原理
 ### 1.1 打包的主要流程如下
 1. 需要读到入口文件里面的内容。
@@ -22,9 +21,9 @@
 
 项目目录暂时如下：
   
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428976afb1?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS83YzNkYWY4Zi00Yjk2LTQwYTAtYWU5YS0yYzE0YTgyNThjNmIucG5n?x-oss-process=image/format,png)
 
->已经把项目放到 **github**：https://github.com/Sunny-lucking/howToBuildMyWebpack。 可以卑微地要个star吗
+>已经把项目放到 **github**：https://github.com/Sunny-lucking/howToBuildMyWebpack  可以卑微地要个star吗
 
 我们创建了add.js文件和minus.js文件,然后 在index.js中引入，再将index.js文件引入index.html。
 
@@ -46,8 +45,8 @@ export const minus = (a,b)=>{
 index.js
 
 ```js
-import add from "./add"
-import {minus} from "./minus";
+import add from "./add.js"
+import {minus} from "./minus.js";
 
 const sum = add(1,2);
 const division = minus(2,1);
@@ -57,7 +56,7 @@ console.log(division);
 ```
 index.html
 
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,15 +69,15 @@ index.html
 </html>
 ```
 
-现在我们打开index.html。你猜会发生什么？？？显然会报错，因为浏览器还不能识别import语法
+现在我们打开index.html。你猜会发生什么？？？显然会报错，因为浏览器还不能识别import等ES6语法
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428e16ee77?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8zMzk3ZTVhNy01NjU0LTRkZjItOWMzNy04NjAzOGNkMTQ1ZGYucG5n?x-oss-process=image/format,png)
 
 不过没关系，因为我们本来就是要来解决这些问题的。
 
 ## 三、获取模块内容
 
-好了，现在我们开始根据上面核心打包原理的思路来实践一下，第一步就是 实现获取模块内容。
+好了，现在我们开始根据上面核心打包原理的思路来实践一下，第一步就是 实现获取主模块内容。
 
 我们来创建一个bundle.js文件。
   
@@ -97,13 +96,13 @@ getModuleInfo("./src/index.js")
 
 目前项目目录如下
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428e96990a?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8xMzA4ZGU2NS05NzNiLTRiYTQtOTAyYS0xNWQ0NzU1YTBjNDMucG5n?x-oss-process=image/format,png)
 
-我们来执行一下bundle.js，看看时候成功获得入口文件内容
+我们来执行一下bundle.js，看看是否成功获得入口文件内容
 
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4428eab35af?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS85NjBhNTMwOC1lZDVlLTQwZWEtODE3MS1lNzg3NWI0YzA3ZTAucG5n?x-oss-process=image/format,png)
 
 哇塞，不出所料的成功。一切尽在掌握之中。好了，已经实现第一步了，且让我看看第二步是要干嘛。
 
@@ -127,6 +126,7 @@ const fs = require('fs')
 const parser = require('@babel/parser')
 const getModuleInfo = (file)=>{
     const body = fs.readFileSync(file,'utf-8')
+    // 新增代码
     const ast = parser.parse(body,{
         sourceType:'module' //表示我们要解析的是ES模块
     });
@@ -137,20 +137,20 @@ getModuleInfo("./src/index.js")
 
 我们去看下@babel/parser的文档：
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4429116277c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8wNzRlMTMxYS03YjNhLTQ0ZjYtOGVmZS1jZjc0YzRlY2M2ZGMucG5n?x-oss-process=image/format,png)
 可见提供了三个API，而我们目前用到的是parse这个API。
 
-它的主要作用是 parses the provided code as an entire ECMAScript program，也就是将我们提供的代码解析成完整的ECMAScript代码。
+它的主要作用是 parses the provided code as an entire ECMAScript program，也就是将我们提供的代码解析成完整的ECMAScript代码的AST。
 
 再看看该API提供的参数
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442948b3312?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8wOTIxN2I4My1jMjZkLTQ4MTItYTFkMS0yNjgwZDQyZTZkNGUucG5n?x-oss-process=image/format,png)
 我们暂时用到的是sourceType，也就是用来指明我们要解析的代码是什么模块。
 
 好了，现在我们来执行一下 bundle.js，看看AST是否成功生成。
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442b1ca38e5?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS9lZTAxMDUxOC02MjIzLTRiY2MtODAyMS0zOGM0NDM4YTYwODYucG5n?x-oss-process=image/format,png)
 
 
 成功。又是不出所料的成功。
@@ -160,7 +160,7 @@ getModuleInfo("./src/index.js")
 
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442b884bcf4?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS9iNTc2MjFiNi01MDJhLTRhYmItOTYyNC1mNTFkNWIwMWQxYTcucG5n?x-oss-process=image/format,png)
 
 
 我们可以改成打印ast.program.body看看
@@ -184,7 +184,7 @@ getModuleInfo("./src/index.js"
 
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442bddc993d?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS80MTBlODk2Ny1kZDExLTQ2MmEtOWY1NC0xMThjNTVjMTRlNWQucG5n?x-oss-process=image/format,png)
 
 
 看，现在打印出来的就是 index.js文件里的内容（也就是我们再index.js里写的代码啦）.
@@ -231,13 +231,13 @@ getModuleInfo("./src/index.js")
 我们来看下官方文档对@babel/traverse的描述
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442bf94ac34?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS82Nzg5M2JhYS03OTAwLTQyZDYtYmEzMy0xYzEyZWRmZTg2MmEucG5n?x-oss-process=image/format,png)
 好吧，如此简略
 
 不过我们不难看出，第一个参数就是AST。第二个参数就是配置对象
 
 我们看看我们写的代码
-```
+```js
 traverse(ast,{
     ImportDeclaration({node}){
         const dirname = path.dirname(file)
@@ -250,7 +250,7 @@ traverse(ast,{
 我们看看之前打印出来的AST。
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442c2eb2d42?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS81YmJlZDMwMy1mM2NkLTQ3OTYtOTBkOC03MGI5YzM2Njc4MTkucG5n?x-oss-process=image/format,png)
 
 ImportDeclaration方法代表的是对type类型为ImportDeclaration的节点的处理。
 
@@ -258,8 +258,8 @@ ImportDeclaration方法代表的是对type类型为ImportDeclaration的节点的
 
 这里的value指的是什么意思呢？其实就是import的值，可以看我们的index.js的代码。
 ```js
-import add from "./add"
-import {minus} from "./minus";
+import add from "./add.js"
+import {minus} from "./minus.js";
 
 const sum = add(1,2);
 const division = minus(2,1);
@@ -268,20 +268,20 @@ console.log(sum);
 console.log(division);
 ```
 
-可见，value指的就是import后面的 './add' 和 './minus' 
+可见，value指的就是import后面的 './add.js' 和 './minus.js' 
 
 然后我们将file目录路径跟获得的value值拼接起来保存到deps里，美其名曰：收集依赖。
 
 ok，这个操作就结束了，执行看看收集成功了没？
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442e3f91329?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8zMGJlMWZmOC04ZGRmLTQwNzYtOGUwMC1hZTMzY2QyM2E1NmIucG5n?x-oss-process=image/format,png)
 
 oh my god。又成功了。
 
 ## 六、ES6转成ES5（AST）
 
-现在我们需要把获得的ES6的AST转化成ES5的AST，前面讲到过，执行这一步需要两个依赖包
+现在我们需要把获得的ES6的AST转化成ES5，前面讲到过，执行这一步需要两个依赖包
 
 
 ```js
@@ -324,7 +324,7 @@ getModuleInfo("./src/index.js")
 我们看看官网文档对@babel/core 的transformFromAst的介绍
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442d065d8a4?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS80ZTRhZjU0Yi1iYzg2LTQyNzQtYmZjMC02ZmY0MTk5YWEwMGUucG5n?x-oss-process=image/format,png)
 
 害，又是一如既往的简略。。。
 
@@ -332,7 +332,7 @@ getModuleInfo("./src/index.js")
 
 好了，现在我们来执行一下，看看结果
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442ed52794c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS9iNTk1Zjg4Yi04N2ZjLTQxZjItODhjNi02YWY1NjYzODg5YzQucG5n?x-oss-process=image/format,png)
 
 我的天，一如既往的成功。可见 它将我们写const 转化成var了。
 
@@ -397,7 +397,7 @@ const parseModules = (file) =>{
 1. 我们首先传入主模块路径
 2. 将获得的模块信息放到temp数组里。
 3. 外面的循坏遍历temp数组，此时的temp数组只有主模块
-4. 里面再获得主模块的依赖deps
+4. 循环里面再获得主模块的依赖deps
 5. 遍历deps，通过调用getModuleInfo将获得的依赖模块信息push到temp数组里。
 
 目前bundle.js文件：
@@ -452,7 +452,7 @@ parseModules("./src/index.js")
 ,执行看看。
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442e4a822fc?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8zZjZhOTQxNi1jYjhkLTQ0N2YtOGI2MC03NTFmMDM4OTliYjEucG5n?x-oss-process=image/format,png)
 
 牛逼！！！确实如此。
 
@@ -488,7 +488,7 @@ const parseModules = (file) =>{
 
 ok，现在存储的就是这种格式啦
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442ed76d596?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS81ZDkyM2I0My0wY2ExLTQ4MmUtOWI3Mi02NDE0NDlhZWFlNzYucG5n?x-oss-process=image/format,png)
 
 ## 八、处理两个关键字
 
@@ -496,7 +496,7 @@ ok，现在存储的就是这种格式啦
 
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e442fd3ba98e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS80YzlkNzM4Yi1iYzY4LTRjNDQtYjRmYS0xNWMzZDY2MTNhY2UucG5n?x-oss-process=image/format,png)
 
 
 我们把这段代码格式化一下
@@ -575,12 +575,12 @@ const bundle = (file) =>{
 
 其实就是
 1. 把保存下来的depsGraph，传入一个立即执行函数。
-2. 将主文件路径传入require函数执行
+2. 将主模块路径传入require函数执行
 3. 执行reuire函数的时候，又立即执行一个立即执行函数，这里是把code的值传进去了
-4. 执行eval（code）。也就是执行code这段代码
+4. 执行eval（code）。也就是执行主模块的code这段代码
 
 我们再来看下code的值
-```
+```js
 // index.js
 "use strict"
 var _add = _interopRequireDefault(require("./add.js"));
@@ -594,7 +594,7 @@ console.log(sum); console.log(division);
 没错执行这段代码的时候，又会用到require函数。此时require的参数为add.js的路径，哎，不是绝对路径，需要转化成绝对路径。因此写一个函数absRequire来转化。怎么实现呢？我们来看下代码
 
 
-```
+```js
 (function (graph) {
     function require(file) {
         function absRequire(relPath) {
@@ -618,10 +618,10 @@ console.log(sum); console.log(division);
 3. 执行eval，也就是执行了index.js的代码。
 4. 执行过程会执行到require函数。
 5. 这时会调用这个require，也就是我们传入的absRequire
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e44302247961?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS81Yjc2MGQ2MS0yZWQ4LTQ4YjUtOWFlYi0wNGNmYTY5MmZmMDcucG5n?x-oss-process=image/format,png)
 6. 而执行absRequire就执行了`return require(graph[file].deps[relPath])`这段代码，也就是执行了外面这个require
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4430a58feb7?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS83MzhhMTQwZC1jY2E1LTQ3OWMtODUwNy1kZmZlOWQ0OThjN2IucG5n?x-oss-process=image/format,png)
 在这里`return require(graph[file].deps[relPath])`，我们已经对路径转化成绝对路径了。因此执行外面的require的时候就是传入绝对路径。
 
 7. 而执行require（"./src/add.js"）之后，又会执行eval，也就是执行add.js文件的代码。
@@ -641,7 +641,7 @@ exports["default"] = _default;
 我们发现 这里它把exports当作一个对象来使用了，但是这个对象还没定义，因此我们可以自己定义一个exports对象。
 
 
-```
+```js
 (function (graph) {
     function require(file) {
         function absRequire(relPath) {
@@ -669,7 +669,7 @@ exports["default"] = _default;
 比如，执行完这段代码后
 
 
-```
+```js
 exports = {
   __esModule：{  value: true}，
   default：function _default(a, b) {  return a + b;}
@@ -760,11 +760,11 @@ console.log(content);
 
 来执行下，看看效果
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4431d738737?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS9iYWJjNmIyZC02NjIyLTRiMDYtYWUzYy00YzczMWM4YzI3YTEucG5n?x-oss-process=image/format,png)
 确实执行成功。接下来，把返回的这段代码写入新创建的文件中
 
 
-```
+```js
 //写入到我们的dist目录下
 fs.mkdirSync('./dist');
 fs.writeFileSync('./dist/bundle.js',content)
@@ -774,15 +774,20 @@ fs.writeFileSync('./dist/bundle.js',content)
 
 我们参观下生成的bundle.js文件
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e4432571632c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8wYmM4ZWY4ZC1kZjdhLTQxNzYtODA4Yy0yMTA1M2RkNGE5ZGIucG5n?x-oss-process=image/format,png)
 
 发现其实就是将我们早期收集的所有依赖作为参数传入到立即执行函数当中，然后通过eval来递归地执行每个依赖的code。
 
 现在我们将bundle.js文件引入index.html看看能不能执行
 
 
-![](https://user-gold-cdn.xitu.io/2020/7/24/1737e44325c1b044?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![\[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-d21afmU8-1595668735614)(https://imgkr.cn-bj.ufileos.com/8316bad8-53b8-4586-9317-aa98ac72eb1f.png)\]](https://img-blog.csdnimg.cn/20200725172227746.png)
+
 
 成功。。。。。惊喜。。
 
 感谢您也恭喜您看到这里，我可以卑微的求个star吗！！！
+>github：https://github.com/Sunny-lucking/howToBuildMyWebpack
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20201022104853313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80Mzk2NDE0OA==,size_16,color_FFFFFF,t_70#pic_center)
